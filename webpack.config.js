@@ -5,6 +5,15 @@ const config = {
   output: {
     filename: 'main.js',
     path: path.join(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      }
+    ]
   }
 };
 
