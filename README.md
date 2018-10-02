@@ -5,6 +5,7 @@
 ### 1. install `webpack`
 1. [Simple Build](https://webpack.js.org/guides/getting-started/)
 1. [Specify Mode](https://webpack.js.org/concepts/mode/)
+1. [Source maps](https://webpack.js.org/configuration/devtool/)
 
 ### 2. install `babel` with webpack
 1.  [babel-loader](https://github.com/babel/babel-loader) (webpack 4.x | babel-loader 8.x | babel 7.x)

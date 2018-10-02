@@ -25,6 +25,7 @@ module.exports = (env, argv) => {
     case 'development':
     default:
       // expand config for development
+      config.devtool = 'inline-source-map';
       break;
   }
 
