@@ -1,5 +1,7 @@
-(app => {
-  const elm = document.createElement('p');
-  elm.innerText = 'Vue Project';
-  app.appendChild(elm);
-})(document.querySelector('#app'));
+import Vue from 'vue';
+import App from './App.vue';
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
