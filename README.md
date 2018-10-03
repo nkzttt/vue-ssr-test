@@ -1,5 +1,7 @@
 # Vue
 
+Node.js version: `v8.12.0`
+
 ## Setup Flow
 
 ### 1. install `webpack`
