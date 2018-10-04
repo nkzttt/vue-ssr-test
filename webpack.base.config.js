@@ -2,9 +2,9 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const config = {
-  entry: path.join(__dirname, 'src/index.js'),
+  entry: path.join(__dirname, 'src/entry-client.js'),
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.join(__dirname, 'dist')
   },
   module: {
@@ -32,17 +32,4 @@ const config = {
   ]
 };
 
-module.exports = (env, argv) => {
-  switch (argv.mode) {
-    case 'production':
-      // expand config for production
-      break;
-    case 'development':
-    default:
-      // expand config for development
-      config.devtool = 'inline-source-map';
-      break;
-  }
-
-  return config;
-};
+module.exports = config;
