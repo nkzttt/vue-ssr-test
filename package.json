@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app",
     "build:prod": "webpack -p",
     "build:dev": "webpack --mode=development"
   },
@@ -23,6 +24,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "express": "^4.16.3",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   }

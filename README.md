@@ -18,3 +18,7 @@ Node.js version: `v8.12.0`
 2. [vue-loader](https://vue-loader.vuejs.org/guide/#manual-configuration)
     1. create files to refer sample of [webpack-simple](https://github.com/vuejs-templates/webpack-simple/tree/master/template/src)
 3. [vue-router](https://router.vuejs.org/installation.html)
+
+### 4. launch server with the `Express`
+1. [express](https://expressjs.com/ja/)
+2. [serve static files](http://expressjs.com/ja/starter/static-files.html)
