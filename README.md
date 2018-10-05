@@ -26,3 +26,5 @@ Node.js version: `v8.12.0`
 ### 5. SSR
 1. [create entry files](https://ssr.vuejs.org/ja/guide/structure.html#webpack%E3%81%AB%E3%82%88%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E6%A7%8B%E9%80%A0)
 1. [setup webpack both client and server](https://ssr.vuejs.org/ja/guide/build-config.html#server-%E8%A8%AD%E5%AE%9A)
+
+other reference document: [VueJs: Server Side Render with Vue-router](https://medium.com/frontend-fun/vuejs-server-side-render-with-vue-router-e73d51699873)

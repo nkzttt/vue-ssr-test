@@ -10,9 +10,11 @@ const routes = [
   { path: '/page', component: Page }
 ];
 
-const router = new Router({
-  mode: 'history',
-  routes
-});
+const createRouter = () => {
+  return new Router({
+    mode: 'history',
+    routes
+  });
+};
 
-export default router;
+export default createRouter;
