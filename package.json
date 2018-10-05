@@ -2,10 +2,13 @@
   "name": "vue_with_ssr",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app",
+    "start": "npm node app",
+    "prestart": "npm run build:prod",
+    "dev": "nodemon node app",
+    "predev": "npm run build:dev",
     "build:prod": "webpack -p --config=webpack.client.config.js && webpack -p --config=webpack.server.config.js",
     "build:dev": "webpack --mode=development --config=webpack.client.config.js && webpack --mode=development --config=webpack.server.config.js"
   },
@@ -25,6 +28,7 @@
   },
   "dependencies": {
     "express": "^4.16.3",
+    "nodemon": "^1.18.4",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.5.17"
