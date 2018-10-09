@@ -281,6 +281,11 @@ greet('Hello');
 `const`が`var`に、`(message) => { ... }`が`function greet(message) { ... }`に変換されています。  
 これでESNextが書ける環境が整いました。  
 
+`babel`の機能や`babel-loader`の設定について、より詳しく知りたい場合は以下を参照してください。  
+
+- [BABELドキュメント](https://babeljs.io/docs/en/index.html)
+- [babel-loader on GitHub](https://github.com/babel/babel-loader)
+
 最後に、ビルドコマンドをnpm scriptsに登録しておきましょう。  
 `package.json`の`scripts`に以下を追記します。  
 
@@ -521,6 +526,11 @@ npm i -D vue-style-loader css-loader
 
 ![2](./ss/2.png)
 
+`vue`で出来ることや`vue-loader`の設定について、より詳しく知りたい場合は以下を参照してください。  
+
+- [Vue.jsガイド](https://jp.vuejs.org/v2/guide/)
+- [Vue Loaderガイド](https://vue-loader.vuejs.org/guide/)
+
 現在のディレクトリ構成は以下のようになっています。
 
 ```
@@ -566,14 +576,12 @@ const routes = [
   { path: '/page', component: Page }
 ];
 
-const router = new Router({
-  routes
-});
+const router = new Router({ routes });
 
 export default router;
 ```
 
-パス`/`ではコンポーネント`Top.vue`を、`/page`ではコンポーネント`Page.vue`をレンダリングします。  
+パス`/`ではコンポーネント`Top.vue`を、パス`/page`ではコンポーネント`Page.vue`をレンダリングします。  
 それぞれのコンポーネントも作りましょう。  
 
 **src/components/Top.vue**
@@ -592,7 +600,7 @@ export default router;
 </template>
 ```
 
-これらを有効化させるために、`src/index.js`で読み込みます。  
+これらを有効化させるために、`src/index.js`で`router`を読み込みます。  
 
 **src/index.js**
 
@@ -630,6 +638,8 @@ new Vue({
 ビルドして表示を確認してみましょう。  
 
 ![3](./ss/3.png)
+
+`vue-router`についてより詳しく知りたい場合は[公式ガイド](https://router.vuejs.org/ja/guide/)を参照してください。
 
 現在のディレクトリ構成は以下のようになっています。
 
