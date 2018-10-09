@@ -1,6 +1,6 @@
-# 実践 - Vue SSR
+# 実践 - Vue.js SSR
 
-この **実践 - Vue SSR** では、`Vue.js` + `Node.js(Express)`でSSR環境を構築していきます。  
+この **実践 - Vue.js SSR** では、`Vue.js` + `Node.js(Express)`でSSR環境を構築していきます。  
 自然な開発フローで、必要最低限の実装で進めていきます。  
 
 ## ゴール
@@ -8,7 +8,7 @@
 **SSR環境を構築でき、拡張することができる**
 
 - 極シンプルなSSR環境を構築します
-- ジェネレータ的なものは使わず、全てを理解しながら進めていきます
+- ジェネレータ的なものは使わず、全体の概要を理解しながら進めていきます
 
 ## 大まかな実装の流れ
 
@@ -19,7 +19,7 @@
 ## 実践
 
 はじめに、Node.jsがインストール済みであるか確認してください。  
-ここは現時点での安定板`v8.12.0`を使用していきます。  
+ここでは現時点での安定板`v8.12.0`を使用していきます。  
 
 続いて、任意のディレクトリで`npm init -y`を実行して`package.json`を生成しておきます。  
 
@@ -33,6 +33,7 @@
 確認用にESNextの`const`と`アロー関数`を使用します。  
 
 **src/index.js**
+
 ```js
 const greet = (message) => {
   console.log(message);
@@ -57,6 +58,7 @@ npm i -D webpack webpack-cli
 これは`webpack`が自動で読み込んでくれる特別な名前です。  
 
 **webpack.config.js**
+
 ```js
 const path = require('path');
 
@@ -167,7 +169,7 @@ greet('Hello');
 ```
 root
 |- /dist
-  |- main.html
+  |- main.js
 |- /node_modules
   |- /some_modules
 |- /src
@@ -203,6 +205,7 @@ npm i -D babel-loader @babel/core @babel/preset-env
 続いて設定ファイル`.babelrc`を作成します。  
 
 **.babelrc**
+
 ```json
 {
   "presets": [
@@ -218,12 +221,13 @@ npm i -D babel-loader @babel/core @babel/preset-env
 }
 ```
 
-この設定によって、`browsers`で指定した環境でもJavaScriptが動作する様にコンパイルされます。  
+この設定によって、`browsers`で指定した環境でもJavaScriptが動作するようにコンパイルされます。  
 なお、設定値は[vuejs-templates](https://github.com/vuejs-templates)を参照しています。  
 
 次に`webpack`で`babel`を使うように、`webpack.config.js`に追記します。  
 
 **webpack.config.js**
+
 ```js
 const path = require('path');
 
@@ -281,6 +285,7 @@ greet('Hello');
 `package.json`の`scripts`に以下を追記します。  
 
 **package.json**
+
 ```json
 {
   ...,
@@ -307,12 +312,12 @@ npm run build:prod
 npm run build:dev
 ```
 
-現在のディレクトリ構成は以下のようになります。
+現在のディレクトリ構成は以下のようになっています。
 
 ```
 root
 |- /dist
-  |- main.html
+  |- main.js
 |- /node_modules
   |- /some_modules
 |- /src
@@ -325,7 +330,328 @@ root
 
 ## 実践2. SPA
 
-近日追加予定
+Vue.jsで簡単なSPAを作っていきます。  
+
+### 単一ファイルコンポーネント
+
+単一ファイルコンポーネント（`.vue`）を使えるようにしていきましょう。  
+
+必要パッケージをインストールします。  
+
+```bash
+npm i -S vue
+```
+
+```bash
+npm i -D vue-loader
+```
+
+`vue`はブラウザ上で使用するため、`--save`のエイリアス`-S`でインストールしておきます。
+
+まずはブラウザ上で動かすコードから書いていきます。  
+
+`vue`を動かせるように`index.html`を作ります。  
+重要なのはビルド結果の`dist/main.js`を読み込むことと、マウント先となる空div`<div id="app"></div>`を置くことです。  
+`dist/main.js`は`DOMContentLoaded`後に走らせるように`script`タグに`defer`属性を追加しておきます。  
+
+**index.html**
+
+```html
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>title</title>
+  <script src="./dist/main.js" defer></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>
+
+```
+
+`src/index.js`を`vue`を使用するように変更します。  
+マウント先に`#app`を、レンダリングにコンポーネント`App.vue`を指定します。  
+
+**src/index.js**
+
+```js
+import Vue from 'vue';
+import App from './App.vue';
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
+```
+
+コンポーネント`App.vue`を作成します。
+
+**src/App.vue**
+
+```html
+<template>
+  <p>{{message}}</p>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        message: 'message'
+      }
+    }
+  }
+</script>
+```
+
+これでブラウザ上で`vue`を動かす準備は出来ました。  
+
+次に単一ファイルコンポーネントをコンパイルできるように`webpack.config.js`を変更します。  
+
+**webpack.config.js**
+
+```js
+const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
+const config = {
+  entry: path.join(__dirname, 'src/index.js'),
+  output: {
+    filename: 'main.js',
+    path: path.join(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      }
+    ]
+  },
+  plugins: [
+    new VueLoaderPlugin()
+  ]
+};
+```
+
+ビルドして表示してみましょう。  
+
+```bash
+npm run build:dev
+```
+
+ローカルサーバーを任意の方法で立ち上げてください。  
+macOSであれば以下のコマンドが利用できます。  
+
+```bash
+# プロジェクトルートにて
+python -m SimpleHTTPServer 8000
+
+# localhost:8000にアクセス可能
+# Ctrl + c で終了
+```
+
+「message」という文字列が表示されていれば成功です。  
+
+![1](./ss/1.png)
+
+コンポーネント内でcssも書けるようにしておきましょう。  
+`src/App.vue`にcssを追加します。  
+
+**src/App.vue**
+
+```html
+<template>
+  <p class="message">{{message}}</p>
+</template>
+
+...
+
+<style>
+  .message {
+    color: red;
+  }
+</style>
+```
+
+必要パッケージをインストールし、`webpack.config.js`にルールを追加します。  
+
+```bash
+npm i -D vue-style-loader css-loader
+```
+
+**webpack.config.js**
+
+```js
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      },
+      // ここを追加
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      }
+    ]
+  },
+```
+
+再度ビルド、（閉じていれば）ローカルサーバーを立ち上げて表示してみましょう。  
+先ほどの「message」が赤くなっていれば成功です。  
+
+![2](./ss/2.png)
+
+現在のディレクトリ構成は以下のようになっています。
+
+```
+root
+|- /dist
+  |- main.js
+|- /node_modules
+  |- /some_modules
+|- /src
+  |- App.vue
+  |- index.js
+|- .babelrc
+|- index.html
+|- package.json
+|- package-lock.json
+|- webpack.config.js
+```
+
+### ルーティング
+
+`vue-router`でルーティングを行い、SPAにしていきます。  
+
+パッケージをインストールします。  
+
+```bash
+npm i -S vue-router
+```
+
+`src/router.js`を作成し、ルーティングの設定をします。  
+
+**src/router.js**
+
+```js
+import Vue from 'vue';
+import Router from 'vue-router';
+import Top from './components/Top.vue';
+import Page from './components/Page.vue';
+
+Vue.use(Router);
+
+const routes = [
+  { path: '/', component: Top },
+  { path: '/page', component: Page }
+];
+
+const router = new Router({
+  routes
+});
+
+export default router;
+```
+
+パス`/`ではコンポーネント`Top.vue`を、`/page`ではコンポーネント`Page.vue`をレンダリングします。  
+それぞれのコンポーネントも作りましょう。  
+
+**src/components/Top.vue**
+
+```html
+<template>
+  <p>Top.</p>
+</template>
+```
+
+**src/components/Page.vue**
+
+```html
+<template>
+  <p>under pages.</p>
+</template>
+```
+
+これらを有効化させるために、`src/index.js`で読み込みます。  
+
+**src/index.js**
+
+```js
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+
+new Vue({
+  el: '#app',
+  router,
+  render: h => h(App)
+});
+```
+
+`src/App.vue`にリンクと表示の設定を行います。  
+
+```html
+<template>
+  <div>
+    <p class="message">{{message}}</p>
+    <ul>
+      <li><router-link to="/">Top</router-link></li>
+      <li><router-link to="/page">Page</router-link></li>
+    </ul>
+    <router-view></router-view>
+  </div>
+</template>
+
+...
+```
+
+パスが変わると`<router-view></router-view>`の内容が対応するコンポーネントに変わる構成です。  
+
+ビルドして表示を確認してみましょう。  
+
+![3](./ss/3.png)
+
+現在のディレクトリ構成は以下のようになっています。
+
+```
+root
+|- /dist
+  |- main.js
+|- /node_modules
+  |- /some_modules
+|- /src
+  |- /components
+    |- Page.vue
+    |- Top.vue
+  |- App.vue
+  |- index.js
+  |- router.js
+|- .babelrc
+|- index.html
+|- package.json
+|- package-lock.json
+|- webpack.config.js
+```
 
 ## 実践3. SSR
 
