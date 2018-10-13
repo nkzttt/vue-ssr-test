@@ -51,6 +51,11 @@ npm i -D webpack webpack-cli
 ```
 
 `i`は`install`、`-D`は`--save-dev`のエイリアスです。  
+以下のコマンドと同じ結果になります。  
+
+```bash
+npm install --save-dev webpack webpack-cli
+```
 
 続いて設定ファイルを作成します。  
 
@@ -86,7 +91,7 @@ module.exports = (env, argv) => {
 };
 ```
 
-`src/index.js`を`main.js`という名前で`dist`ディレクトリにビルドするだけの設定です。  
+ブロック毎に確認していきましょう。  
 
 ```js
   entry: path.join(__dirname, 'src/index.js'),
@@ -96,7 +101,10 @@ module.exports = (env, argv) => {
   }
 ```
 
-`module.exports`では単にオブジェクトを返すこともできますが、関数を返すことによって実行時の環境（`env`）や引数（`argv`）を受け取ることができ、環境ごとの設定をすることが可能になります。  
+`src/index.js`を`main.js`という名前で`dist`ディレクトリにビルドするだけの設定です。  
+
+`require('path')`や`__dirname`はNode.jsで使える特別なモジュール・変数です。  
+ここでは述べませんが、興味のある方は[Node.jsドキュメント](https://nodejs.org/ja/docs/)を参照してください。  
 
 ```js
 module.exports = (env, argv) => {
@@ -107,7 +115,7 @@ module.exports = (env, argv) => {
 }
 ```
 
-今回は開発環境でのみソースマップを追加するように設定しています。  
+`module.exports`では単にオブジェクトを返すこともできますが、関数を返すことによって実行時の環境（`env`）や引数（`argv`）を受け取ることができ、環境ごとの設定をすることが可能になります。  
 
 ```js
     case 'development':
@@ -117,8 +125,7 @@ module.exports = (env, argv) => {
       break;
 ```
 
-`require('path')`や`__dirname`はNode.jsで使える特別なモジュール・変数です。  
-ここでは述べませんが、興味のある方は[Node.jsドキュメント](https://nodejs.org/ja/docs/)を参照してください。  
+今回は開発環境でのみソースマップを追加するように設定しています。  
 
 それでは、一度ビルドを実行してみましょう。  
 
@@ -184,7 +191,7 @@ root
 これは`webpack`にビルドの方法を指定するもので、`mode=production`とすれば本番環境に適した形でビルドをしてくれます。  
 オプション`mode`を省略した場合、`webpack`は自動で`mode`を`production`に設定し、その旨のWARNINGをコマンドライン上に表示します。  
 
-試しに以下のコマンドの実行して、コマンドライン上の表示やビルド結果を確認してみてください。  
+試しに以下のコマンドの実行して、コマンドライン上の表示やビルド結果の違いを確認してみてください。  
 
 ```bash
 npx webpack
@@ -202,7 +209,8 @@ npx webpack
 npm i -D babel-loader @babel/core @babel/preset-env
 ```
 
-続いて設定ファイル`.babelrc`を作成します。  
+続いて`babel`の設定を行います。  
+`babel`の設定方法は[いくつか](https://babeljs.io/docs/en/configuration)ありますが、ここでは設定ファイル`.babelrc`を作っていきます。  
 
 **.babelrc**
 
@@ -238,7 +246,7 @@ const config = {
     path: path.join(__dirname, 'dist')
   },
   
-  // ここを追加
+  // 以下を追加
   module: {
     rules: [
       {
@@ -251,7 +259,7 @@ const config = {
 };
 ```
 
-これで拡張子`.mjs`または`js`のビルドには`babel`の設定が適応されます。  
+これで拡張子`.mjs`または`.js`のビルドには`babel`の設定が適応されます。  
 
 それでは、ビルドを実行してみましょう。  
 
@@ -291,11 +299,13 @@ greet('Hello');
 
 **package.json**
 
-```json
+```js
 {
   ...,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    
+    // 以下を追加
     "build:prod": "webpack -p",
     "build:dev": "webpack --mode=development"
   },
@@ -307,7 +317,7 @@ npm scriptsでは`npx`なしでもローカルにインストールされたnode
 
 `webpack`にオプション`-p`を指定すると、自動的に`production`モードに設定され、コード圧縮も実行されます。  
 
-以下のコマンドを実行して、それぞれのビルド結果を確認してみてください。  
+以下のコマンドを実行して、それぞれのビルド結果の違いを確認してみてください。  
 
 ```bash
 # 本番用
@@ -356,8 +366,17 @@ npm i -D vue-loader
 まずはブラウザ上で動かすコードから書いていきます。  
 
 `vue`を動かせるように`index.html`を作ります。  
-重要なのはビルド結果の`dist/main.js`を読み込むことと、マウント先となる空div`<div id="app"></div>`を置くことです。  
-`dist/main.js`は`DOMContentLoaded`後に走らせるように`script`タグに`defer`属性を追加しておきます。  
+重要なのは  
+
+① ビルド結果の`dist/main.js`を読み込むこと  
+② マウント先となる空div`<div id="app"></div>`を置くこと  
+
+です。  
+また、`dist/main.js`は`DOMContentLoaded`後に走らせるように  
+
+③ `script`タグに`defer`属性を追加  
+
+しておきます。  
 
 **index.html**
 
@@ -370,16 +389,18 @@ npm i -D vue-loader
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>title</title>
+  <!-- ①, ③ -->
   <script src="./dist/main.js" defer></script>
 </head>
 <body>
+<!-- ② -->
 <div id="app"></div>
 </body>
 </html>
 
 ```
 
-`src/index.js`を`vue`を使用するように変更します。  
+`vue`を使用するように`src/index.js`を変更します。  
 マウント先に`#app`を、レンダリングにコンポーネント`App.vue`を指定します。  
 
 **src/index.js**
@@ -414,7 +435,7 @@ new Vue({
 </script>
 ```
 
-これでブラウザ上で`vue`を動かす準備は出来ました。  
+これでブラウザ上で`vue`を動かす準備が出来ました。  
 
 次に単一ファイルコンポーネントをコンパイルできるように`webpack.config.js`を変更します。  
 
@@ -449,7 +470,7 @@ const config = {
 };
 ```
 
-ビルドして表示してみましょう。  
+ビルドしてブラウザで表示してみましょう。  
 
 ```bash
 npm run build:dev
@@ -509,7 +530,8 @@ npm i -D vue-style-loader css-loader
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
-      // ここを追加
+      
+      // 以下を追加
       {
         test: /\.css$/,
         use: [
@@ -638,6 +660,9 @@ new Vue({
 ビルドして表示を確認してみましょう。  
 
 ![3](./ss/3.png)
+
+URLとコンテンツが変わっても、画面の再読み込みは行われません。  
+とても簡単ですが、これでSPAができました。  
 
 `vue-router`についてより詳しく知りたい場合は[公式ガイド](https://router.vuejs.org/ja/guide/)を参照してください。
 
