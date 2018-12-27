@@ -1,7 +1,6 @@
 # Training - Vue.js SSR
 
-This training will create the SSR with `Vue.js` and `Express` of `Node.js`.  
-We will progress natural flow and minimum implementation.  
+This training will create the SSR with `Vue.js` and `Express` of `Node.js`. We will progress natural flow and minimum implementation.  
 
 ## Goal this training
 
@@ -18,8 +17,7 @@ We will progress natural flow and minimum implementation.
 
 ## Practice
 
-First, please check your machine whether installed the Node.js.
-This training use `v8.12.0` as stable version at the moment.
+First, please check your machine whether installed the Node.js. This training use `v8.12.0` as stable version at the moment.
 
 Next, move to some directory you like then create file by run command `npm init -y`.
 
@@ -29,8 +27,7 @@ OK, next.
 
 We will build up environment that can write the ESNext by use the module `webpack` and `babel`.
 
-Let's create a file `src/index.js` which is target of the build.
-And write code into the file for checking of build of the ESNext:
+Let's create a file `src/index.js` which is target of the build. And write code into the file for checking of build of the ESNext:
 
 **src/index.js**
 
@@ -50,9 +47,7 @@ Install the `webpack` to your machine.
 npm i -D webpack webpack-cli
 ```
 
-The above command has abbreviations.
-`i` is `install` and `-D` is `--save-dev`.
-The command is equivalent below:
+The above command has abbreviations. `i` is `install` and `-D` is `--save-dev`. The command is equivalent below:
 
 ```bash
 npm install --save-dev webpack webpack-cli
@@ -60,8 +55,7 @@ npm install --save-dev webpack webpack-cli
 
 Then, let's create setting file.
 
-We will name `webpack.config.js`;
-The name is special that is loaded automatically from the `webpack`.
+We will name `webpack.config.js`. The name is special that is loaded automatically from the `webpack`.
 
 **webpack.config.js**
 
@@ -104,8 +98,7 @@ Let's check each blocks.
 
 It is settings that build a file to `dist` directory as rename the file from `src/index.js` to `main.js`.
 
-Like `require('path')` and `__dirname` in the code is special module or variable that can use in the Node.js.
-To omit at here, but if you have had an interest it then please refer [document of the Node.js](https://nodejs.org/ja/docs/).
+Like `require('path')` and `__dirname` in the code is special module or variable that can use in the Node.js. To omit at here, but if you have had an interest it then please refer [document of the Node.js](https://nodejs.org/ja/docs/).
 
 ```js
 module.exports = (env, argv) => {
@@ -116,9 +109,7 @@ module.exports = (env, argv) => {
 }
 ```
 
-`module.exports` can return a object and also can return the function. 
-If you return the function then can receive arguments like the `env` and the `argv` that refer variables at the runtime.
-Using the arguments will be able to set settings of each environments.
+`module.exports` can return a object and also can return the function. If you return the function then can receive arguments like the `env` and the `argv` that refer variables at the runtime. Using the arguments will be able to set settings of each environments.
 
 ```js
     case 'development':
@@ -152,8 +143,7 @@ Entrypoint main = main.js
 [./src/index.js] 72 bytes {main} [built]
 ```
 
-Then look through the file `dist/main.js`.
-We can discover code at the end on the file:
+Then look through the file `dist/main.js`. We can discover code at the end on the file:
 
 ```js
 /***/ "./src/index.js":
@@ -172,8 +162,7 @@ greet('Hello');
 /***/ })
 ```
 
-It's clearly the code like `const` or the allow function is build as original.
-But this is ok at the moment because we don't set settings of compile of the ESNext.
+It's clearly the code like `const` or the allow function is build as original. But this is ok at the moment because we don't set settings of compile of the ESNext.
 
 So then, look at directory tree of now.
 
